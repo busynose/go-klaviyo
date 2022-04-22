@@ -36,6 +36,7 @@ func TestClient_Identify(t *testing.T) {
 
 func TestClient_GetPerson(t *testing.T) {
 	client := newTestClient()
+	testPersonId := "01FK5337E9D68EA1FKP2FV4XFC"
 	p, err := client.GetPerson(testPersonId)
 	if err != nil {
 		t.Fatal(err)
@@ -66,7 +67,7 @@ func TestClient_UpdatePerson(t *testing.T) {
 	}
 
 	// Verify update went through
-	b, err := client.GetPerson(p.Id)
+	b, err := client.GetPerson(p.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -153,5 +154,19 @@ func TestListMember(t *testing.T) {
 		t.Log(members)
 		t.Log(marker)
 	}
+}
 
+func TestGetListInfo(t *testing.T) {
+	client := newTestClient()
+	lists, err := client.GetLists()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, l := range lists {
+		listInfo, err := client.GetListInfo(l.ListID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("%+v", listInfo)
+	}
 }

@@ -243,7 +243,7 @@ func (c *Client) GetPerson(personId string) (*Person, error) {
 // PUT https://a.klaviyo.com/api/v1/person/person_id
 // Only works to update a persons attributes after they have been identified.
 func (c *Client) UpdatePerson(person *Person) error {
-	u := newEndpoint(EndpointV1, fmt.Sprintf("person/%s", person.Id))
+	u := newEndpoint(EndpointV1, fmt.Sprintf("person/%s", person.ID))
 	values := u.Query()
 	for k, v := range person.GetMap() {
 		values.Add(k, fmt.Sprintf("%v", v))
@@ -297,6 +297,22 @@ func (c *Client) Unsubscribe(listId string, emails, phoneNumbers, pushTokens []s
 		}
 	}
 	return c.sendJSON(http.MethodDelete, ContentNone, u, m, nil)
+}
+
+type ListInfo struct {
+	ListName   string    `json:"list_name"`
+	FolderName string    `json:"folder_name"`
+	Created    time.Time `json:"created"`
+	Updated    time.Time `json:"updated"`
+}
+
+// https://developers.klaviyo.com/en/reference/get-list-info
+// get https://a.klaviyo.com/api/v2/list/{list_id}
+func (c *Client) GetListInfo(listID string) (ListInfo, error) {
+	u := newEndpoint(EndpointV2, fmt.Sprintf("list/%s", listID))
+	var listInfo ListInfo
+	err := c.send(http.MethodGet, ContentJSON, u, &listInfo)
+	return listInfo, err
 }
 
 type ListPerson struct {

@@ -9,12 +9,9 @@ import (
 // A test person for our test cases. If you change this please make sure to update the tests!
 func newTestPerson() Person {
 	return Person{
-		Object: Object{
-			Id:     testPersonId,
-			Object: "Person",
-		},
+		ID:           testPersonId,
+		Object:       "Person",
 		City:         "Vancouver",
-		Consent:      []string{ConsentEmail, ConsentSMS},
 		Country:      "Canada",
 		Email:        "kitty@monstercat.com",
 		FirstName:    "Kitty",
@@ -75,11 +72,6 @@ func TestPerson_GetMap(t *testing.T) {
 	if m[attrIsTest] != p.Attributes[attrIsTest] {
 		t.Error("Attribute IsTest did not match value.")
 	}
-	if arr, ok := m["$consent"].([]string); !ok {
-		t.Error("$consent should be an array of strings")
-	} else if len(arr) != len(p.Consent) {
-		t.Errorf("Expected %d values for $consent.", len(p.Consent))
-	}
 }
 
 func TestPerson_JSON(t *testing.T) {
@@ -116,9 +108,7 @@ func TestPerson_JSON(t *testing.T) {
 	if a.Region != b.Region {
 		t.Error("Region did not match after encoding/decoding process")
 	}
-	if len(a.Consent) != len(b.Consent) {
-		t.Error("Consent length did not match")
-	}
+
 	if a.Attributes[attrIsTest] != b.Attributes[attrIsTest] {
 		t.Error("Attribute did not match")
 	}

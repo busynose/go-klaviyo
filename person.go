@@ -25,35 +25,28 @@ func (a Attributes) ParseBool(key string) bool {
 }
 
 type Person struct {
-	Object
-
-	// Below are special fields used by Klaviyo, they will be render in special UI for fancy-ness
-	// they are identified by the $ prefix in their JSON.
-	// Please read here for more: https://help.klaviyo.com/hc/en-us/articles/115005084927-Template-Tags-and-Variable-Syntax#klaviyo-special-properties18
-	//
-	// Any extra attributes appear in the same flat structure but we store them in Attributes below.
-	CustomId     string   `json:"$id"`
-	Address1     string   `json:"$address1"`
-	Address2     string   `json:"$address2"`
-	City         string   `json:"$city"`
-	Consent      []string `json:"$consent"`
-	Country      string   `json:"$country"`
-	Email        string   `json:"$email"`
-	FirstName    string   `json:"$first_name"`
-	Image        string   `json:"$image"`
-	LastName     string   `json:"$last_name"`
-	Latitude     KFloat   `json:"$latitude"`
-	Longitude    KFloat   `json:"$longitude"`
-	Organization string   `json:"$organization"`
-	PhoneNumber  string   `json:"$phone_number"`
-	Region       string   `json:"$region"`
-	Source       KInt     `json:"$source"`
-	Timezone     string   `json:"$timezone"`
-	Title        string   `json:"$title"`
-	Zip          string   `json:"$zip"`
-
-	// Use these to have custom attributes tied to a user that can be used to create segments for lists.
-	Attributes Attributes
+	ID           string     `json:"id"`
+	Object       string     `json:"object"`
+	Address1     string     `json:"$address1"`
+	Address2     string     `json:"$address2"`
+	City         string     `json:"$city"`
+	Country      string     `json:"$country"`
+	Latitude     float64    `json:"$latitude"`
+	Longitude    float64    `json:"$longitude"`
+	Region       string     `json:"$region"`
+	Zip          string     `json:"$zip"`
+	Email        string     `json:"$email"`
+	Title        string     `json:"$title"`
+	PhoneNumber  string     `json:"$phone_number"`
+	Organization string     `json:"$organization"`
+	FirstName    string     `json:"$first_name"`
+	LastName     string     `json:"$last_name"`
+	Timezone     string     `json:"$timezone"`
+	CustomerID   string     `json:"$id"`
+	Created      string     `json:"created"`
+	Updated      string     `json:"updated"`
+	Source       KInt       `json:"$source"`
+	Attributes   Attributes `json:"attributes"`
 }
 
 // A profile identifier is an email or phone number. In the case of SMS they must have a phone number.
