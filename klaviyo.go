@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -95,6 +96,14 @@ type Client struct {
 
 	// The amount of time an HTTP API call should run for before it times out.
 	DefaultTimeout time.Duration
+}
+
+func NewClient(publicKey string, privateKey string, defaultTimeout time.Duration) *Client {
+	return &Client{
+		PublicKey:      publicKey,
+		PrivateKey:     privateKey,
+		DefaultTimeout: defaultTimeout,
+	}
 }
 
 func (c *Client) doReq(r *http.Request, out interface{}) error {
@@ -318,6 +327,50 @@ func (c *Client) InList(listId string, emails, phoneNumbers, pushTokens []string
 	var res []ListPerson
 	err := c.send(http.MethodGet, ContentJSON, u, &res)
 	return res, err
+}
+
+type List struct {
+	ListID   string `json:"list_id"`
+	ListName string `json:"list_name"`
+}
+
+// https://developers.klaviyo.com/en/reference/get-lists
+// GET https://a.klaviyo.com/api/v2/lists
+func (c *Client) GetLists() (Lists []List, err error) {
+	u := newEndpoint(EndpointV2, "lists")
+	var res []List
+	err = c.send(http.MethodGet, ContentJSON, u, &res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+type MemberResp struct {
+	Records []Member `json:"records"`
+	Marker  int      `json:"marker"`
+}
+
+type Member struct {
+	ID          string `json:"id"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phone_number"`
+	PushToken   string `json:"push_token"`
+}
+
+// https://developers.klaviyo.com/en/reference/get-members
+// GET https://a.klaviyo.com/api/v2/group/{list_or_segment_id}/members/all
+func (c *Client) GetListAndSegmentMembers(id string, marker int) ([]Member, int, error) {
+	u := newEndpoint(EndpointV2, fmt.Sprintf("group/%s/members/all", id))
+	values := u.Query()
+	values.Add("marker", strconv.Itoa(marker))
+	u.RawQuery = values.Encode()
+	var res MemberResp
+	err := c.send(http.MethodGet, ContentJSON, u, &res)
+	if err != nil {
+		return nil, 0, err
+	}
+	return res.Records, res.Marker, nil
 }
 
 func trimEmptyValues(m map[string]interface{}) map[string]interface{} {

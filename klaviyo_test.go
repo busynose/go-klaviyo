@@ -1,14 +1,15 @@
 package klaviyo
 
 import (
+	"log"
 	"os"
 	"testing"
 	"time"
 )
 
 var (
-	testPersonId  = os.Getenv("KlaviyoTestPersonId")
-	testListId    = os.Getenv("KlaviyoTestListId")
+	testPersonId = os.Getenv("KlaviyoTestPersonId")
+	testListId   = os.Getenv("KlaviyoTestListId")
 )
 
 const (
@@ -20,7 +21,7 @@ func newTestClient() *Client {
 	return &Client{
 		PublicKey:      os.Getenv("KlaviyoPublicKey"),
 		PrivateKey:     os.Getenv("KlaviyoPrivateKey"),
-		DefaultTimeout: time.Second,
+		DefaultTimeout: time.Second * 10,
 	}
 }
 
@@ -126,4 +127,31 @@ func TestClient_Unsubscribe(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestList(t *testing.T) {
+	client := newTestClient()
+	lists, err := client.GetLists()
+	log.Println(len(lists))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(lists)
+}
+
+func TestListMember(t *testing.T) {
+	client := newTestClient()
+	lists, err := client.GetLists()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, list := range lists {
+		members, marker, err := client.GetListAndSegmentMembers(list.ListID, 1)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Log(members)
+		t.Log(marker)
+	}
+
 }
