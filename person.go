@@ -31,8 +31,8 @@ type Person struct {
 	Address2     string     `json:"$address2"`
 	City         string     `json:"$city"`
 	Country      string     `json:"$country"`
-	Latitude     float64    `json:"$latitude"`
-	Longitude    float64    `json:"$longitude"`
+	Latitude     string     `json:"$latitude"`
+	Longitude    string     `json:"$longitude"`
 	Region       string     `json:"$region"`
 	Zip          string     `json:"$zip"`
 	Email        string     `json:"$email"`
