@@ -45,7 +45,6 @@ type Person struct {
 	CustomerID   string     `json:"$id"`
 	Created      string     `json:"created"`
 	Updated      string     `json:"updated"`
-	Source       KInt       `json:"$source"`
 	Attributes   Attributes `json:"attributes"`
 }
 
