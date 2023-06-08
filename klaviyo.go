@@ -131,7 +131,7 @@ func (c *Client) doReq(r *http.Request, out interface{}) error {
 	// See more here: https://apidocs.klaviyo.com/reference/api-overview#errors
 	if res.StatusCode != http.StatusOK {
 		var err APIError
-		if contentType != ContentJSON {
+		if !strings.Contains(contentType, ContentJSON) {
 			err.Message = string(data)
 		} else {
 			if jsonErr := json.NewDecoder(bytes.NewBuffer(data)).Decode(&err); jsonErr != nil {
