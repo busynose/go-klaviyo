@@ -144,6 +144,11 @@ func (c *Client) doReq(r *http.Request, out interface{}) error {
 		err.Raw = string(data)
 		return &err
 	}
+
+	if strings.Contains(contentType, ContentJSON) {
+		contentType = ContentJSON
+	}
+
 	if out != nil {
 		switch contentType {
 		case ContentJSON:
